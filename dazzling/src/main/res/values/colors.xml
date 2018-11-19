@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="md_button_disabled_light">#1F000000</color>
+    <color name="md_button_disabled_dark">#1FFFFFFF</color>
+    <color name="md_text_disabled_light">#61000000</color>
+    <color name="md_text_disabled_dark">#4DFFFFFF</color>
+    <color name="md_control_normal_light">#8A000000</color>
+    <color name="md_control_normal_dark">#B3FFFFFF</color>
+</resources>

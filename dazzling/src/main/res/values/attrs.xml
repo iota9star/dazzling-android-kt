@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CheckColorView">
+        <attr name="color" format="color|reference" />
+        <attr name="borderWidth" format="dimension" />
+        <attr name="selectedSpace" format="dimension" />
+        <attr name="checked" />
+    </declare-styleable>
+</resources>

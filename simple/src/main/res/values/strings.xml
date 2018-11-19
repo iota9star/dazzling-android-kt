@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DAZZLING-SIMPLE</string>
+    <string name="no_alpha_color">NO ALPHA COLOR</string>
+    <string name="alpha_color">ALPHA COLOR</string>
+</resources>
