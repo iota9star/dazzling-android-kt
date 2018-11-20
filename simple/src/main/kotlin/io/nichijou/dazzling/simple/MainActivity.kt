@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
                 enableAlpha = false
                 backgroundColor = Color.WHITE
                 randomSize = 16
+                stepFactor = 0.13f
                 onColorChecked(this@MainActivity::setColor)
                 onOKPressed { c ->
                     it as Button
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                 enableAlpha = true
                 backgroundColor = Color.WHITE
                 randomSize = 16
+                stepFactor = 0.2f
                 onColorChecked(this@MainActivity::setColor)
                 onOKPressed { c ->
                     it as Button

@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.FloatRange
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -34,12 +35,14 @@ class Dazzling : BottomSheetDialogFragment() {
     private var mRandom: ImageButton? = null
     private val mColorAdapter = CheckColorAdapter()
 
-    private var onOKPressed: ((color: Int) -> Unit)? = null
+    private var mOnOKPressed: ((color: Int) -> Unit)? = null
 
     var enableAlpha = false
     var presetColor: MutableList<Int>? = null
     var selectedColor = 0
     var randomSize = 11
+    @FloatRange(from = 0.01, to = 2.0)
+    var stepFactor = .2f
 
     var backgroundColor = Color.WHITE
         set(value) {
@@ -102,7 +105,7 @@ class Dazzling : BottomSheetDialogFragment() {
             mPreColorWrapper = findViewById(R.id.pre_color_wrapper)
             mOkBtn = findViewById<Button>(R.id.ok_btn).apply {
                 setOnClickListener {
-                    onOKPressed?.invoke(selectedColor)
+                    mOnOKPressed?.invoke(selectedColor)
                     dismiss()
                 }
             }
@@ -135,7 +138,7 @@ class Dazzling : BottomSheetDialogFragment() {
                 || Regex("#[A-F0-9]{8}").matches(hex)) {
                 val color = Color.parseColor(hex)
                 mPreColor?.color = color
-                mColorAdapter.newColors(color.stepColor(), color)
+                mColorAdapter.newColors(color.stepColor(stepFactor), color)
             }
         }
 
@@ -156,7 +159,7 @@ class Dazzling : BottomSheetDialogFragment() {
     }
 
     fun onOKPressed(onOK: (color: Int) -> Unit) {
-        onOKPressed = onOK
+        mOnOKPressed = onOK
     }
 
     companion object {

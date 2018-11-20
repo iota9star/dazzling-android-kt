@@ -4,7 +4,7 @@ import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.graphics.ColorUtils
-import java.util.*
+import kotlin.random.Random
 
 
 @ColorInt
@@ -80,11 +80,11 @@ fun Int.isColorDark() = !this.isColorLight()
 
 fun Int.isColorLight(@ColorInt bgColor: Int) = if (Color.alpha(this) < 128) bgColor.isColorLight() else this.isColorLight()
 
-fun Int.stepColor(): MutableList<Int> {
+fun Int.stepColor(@FloatRange(from = 0.01, to = 2.0) factor: Float = 0.2f): MutableList<Int> {
     val colors = mutableListOf<Int>()
     val alpha = this.colorAlpha()
-    for (i in 0..20 step 2) {
-        val brightenColor = this.brightenColor(i / 10f)
+    for (i in 0..200 step (factor * 100).toInt()) {
+        val brightenColor = this.brightenColor(i / 100f)
         if (this == brightenColor) {
             colors.add(this)
         } else {
@@ -99,10 +99,9 @@ fun Int.colorAlpha() = Color.alpha(this)
 fun Int.toHexColor() = Integer.toHexString(this).toUpperCase()
 
 fun randomColor(): Int {
-    val random = Random()
-    var r = Integer.toHexString(random.nextInt(256))
-    var g = Integer.toHexString(random.nextInt(256))
-    var b = Integer.toHexString(random.nextInt(256))
+    var r = Integer.toHexString(Random.nextInt(256))
+    var g = Integer.toHexString(Random.nextInt(256))
+    var b = Integer.toHexString(Random.nextInt(256))
     r = if (r.length == 1) "0$r" else r
     g = if (g.length == 1) "0$g" else g
     b = if (b.length == 1) "0$b" else b
@@ -117,8 +116,10 @@ fun randomColors(size: Int): MutableList<Int> {
     return colors
 }
 
+internal fun IntRange.random() = Random.nextInt(start, endInclusive + 1)
+
 fun randomColors(range: IntRange): IntArray {
-    val size = Random().nextInt(range.last - range.first) + range.first
+    val size = range.random()
     val intArray = IntArray(size)
     for (i in 0 until size) {
         intArray[i] = randomColor()

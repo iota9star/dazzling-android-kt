@@ -91,7 +91,7 @@
                 android:layout_height="40dp"
                 android:background="@null"
                 android:padding="8dp"
-                app:srcCompat="@drawable/ic_round_Infinite"
+                app:srcCompat="@drawable/ic_round_infinite"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
 

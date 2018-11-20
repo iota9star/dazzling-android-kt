@@ -15,7 +15,7 @@ internal class CheckColorView(context: Context, attrs: AttributeSet?) : View(con
         fun onCheckedChanged(view: CheckColorView, color: Int)
     }
 
-    private var onCheckedChangeListener: OnCheckedChangeListener? = null
+    private var mOnCheckedChangeListener: OnCheckedChangeListener? = null
     private var mChecked = false
     private val mRingPaint = Paint()
     private val mPaint = Paint()
@@ -65,7 +65,7 @@ internal class CheckColorView(context: Context, attrs: AttributeSet?) : View(con
         if (!mChecked) {
             mChecked = true
             invalidate()
-            onCheckedChangeListener?.onCheckedChanged(this, color)
+            mOnCheckedChangeListener?.onCheckedChanged(this, color)
         }
     }
 
@@ -73,7 +73,7 @@ internal class CheckColorView(context: Context, attrs: AttributeSet?) : View(con
         if (mChecked != checked) {
             mChecked = checked
             invalidate()
-            onCheckedChangeListener?.onCheckedChanged(this, color)
+            mOnCheckedChangeListener?.onCheckedChanged(this, color)
         }
     }
 
@@ -83,7 +83,7 @@ internal class CheckColorView(context: Context, attrs: AttributeSet?) : View(con
     }
 
     fun setOnCheckedChangeListener(listener: OnCheckedChangeListener) {
-        onCheckedChangeListener = listener
+        mOnCheckedChangeListener = listener
     }
 
     override fun onDraw(canvas: Canvas) {
