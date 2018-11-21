@@ -18,14 +18,11 @@ internal fun Int.setGreen(green: Int) = Color.argb(Color.alpha(this), Color.red(
 @ColorInt
 internal fun Int.setBlue(blue: Int) = Color.argb(Color.alpha(this), Color.red(this), Color.green(this), blue)
 
-
 @ColorInt
 fun Int.stripAlpha() = Color.rgb(Color.red(this), Color.green(this), Color.blue(this))
 
-
 @ColorInt
 fun Int.adjustAlpha(factor: Float) = Color.argb(Math.round(Color.alpha(this) * factor), Color.red(this), Color.green(this), Color.blue(this))
-
 
 @ColorInt
 fun Int.saturationColor(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
@@ -110,15 +107,7 @@ fun Int.colorAlpha() = Color.alpha(this)
 
 fun Int.toHexColor() = Integer.toHexString(this).toUpperCase()
 
-fun randomColor(): Int {
-    var r = Integer.toHexString(Random.nextInt(256))
-    var g = Integer.toHexString(Random.nextInt(256))
-    var b = Integer.toHexString(Random.nextInt(256))
-    r = if (r.length == 1) "0$r" else r
-    g = if (g.length == 1) "0$g" else g
-    b = if (b.length == 1) "0$b" else b
-    return Color.parseColor("#$r$g$b")
-}
+fun randomColor() = Color.rgb(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
 
 fun randomColors(size: Int): MutableList<Int> {
     val colors = mutableListOf<Int>()

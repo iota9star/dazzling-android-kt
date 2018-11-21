@@ -93,9 +93,17 @@ internal class ColorView(context: Context, attrs: AttributeSet?) : View(context,
         mPaint.setShadowLayer(mSelectedSpace, 0f, 0f, Color.DKGRAY.adjustAlpha(.08f))
         if (Color.alpha(mColor) < 255) {
             if (mTransparent == null) {
-                val radius = measuredWidth / 2f - mSelectedSpace
+                val lt: Int
+                val rb: Int
+                if (mChecked) {
+                    lt = (mBorderWidth + mSelectedSpace * 2).toInt()
+                    rb = (measuredWidth - mSelectedSpace * 4).toInt()
+                } else {
+                    lt = mBorderWidth.toInt()
+                    rb = (measuredWidth - mSelectedSpace * 2).toInt()
+                }
                 mTransparent = context.drawableRes(R.drawable.bg_transparent)
-                mTransparent?.setBounds(mBorderWidth.toInt(), mBorderWidth.toInt(), (radius * 2).toInt(), (radius * 2).toInt())
+                mTransparent?.setBounds(lt, lt, rb, rb)
             }
             mTransparent?.draw(canvas)
         }

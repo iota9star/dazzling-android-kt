@@ -1,6 +1,7 @@
 package io.nichijou.dazzling
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -125,6 +126,7 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
             return
         }
         val factor = mValue * 1f / COLOR_DELTA
+        println("color: $mColor,factor: $factor,value: $mValue")
         mValueCenterX = mContentWidth * factor + mStartX
         drawBackgroundTrack(canvas, mPaint, mStartX, mCenterY, mStopX, mCenterY)
         drawValueTrack(canvas, mPaint, mStartX, mCenterY, mValueCenterX, mCenterY, factor)
@@ -180,6 +182,7 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
         canvas.drawText(value, centerX - bounds.width() / 2, baseline, mPaint)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -225,6 +228,13 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
             }
         }
         return true
+    }
+
+    private fun isTrackTouched(event: MotionEvent): Boolean {
+        return event.x >= paddingLeft
+            && event.x <= measuredWidth - paddingRight
+            && event.y >= paddingTop
+            && event.y <= measuredHeight - paddingBottom
     }
 
     override fun onSaveInstanceState(): Parcelable? {

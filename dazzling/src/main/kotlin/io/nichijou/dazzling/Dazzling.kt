@@ -103,26 +103,28 @@ class Dazzling : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_palette, container, false).apply {
-            mCurrentColor = if (isEnableAlpha) preselectedColor else preselectedColor.stripAlpha()
+            mCurrentColor = preselectedColor
             if (isEnableColorBar) {
-                mAlpha = findViewById(R.id.alpha)
                 if (isEnableAlpha) {
-                    mAlpha!!.apply {
+                    LayoutInflater.from(context).inflate(R.layout.argb, argb, true)
+                    mAlpha = findViewById<ColorBar>(R.id.alpha).apply {
                         setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
                             override fun onChange(view: ColorBar, value: Int) {
                                 mValueChangeByDragging = true
                                 mHexEditor?.setText(mCurrentColor.setAlpha(value).toHexColor())
+                                println("alpha: $value")
                             }
                         })
                     }
                 } else {
-                    (mAlpha!!.parent as ViewGroup).removeView(mAlpha)
+                    LayoutInflater.from(context).inflate(R.layout.rgb, argb, true)
                 }
                 mRed = findViewById<ColorBar>(R.id.red).apply {
                     setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
                         override fun onChange(view: ColorBar, value: Int) {
                             mValueChangeByDragging = true
                             mHexEditor?.setText(mCurrentColor.setRed(value).toHexColor())
+                            println("red: $value")
                         }
                     })
                 }
@@ -131,6 +133,7 @@ class Dazzling : BottomSheetDialogFragment() {
                         override fun onChange(view: ColorBar, value: Int) {
                             mValueChangeByDragging = true
                             mHexEditor?.setText(mCurrentColor.setGreen(value).toHexColor())
+                            println("green: $value")
                         }
                     })
                 }
@@ -139,6 +142,7 @@ class Dazzling : BottomSheetDialogFragment() {
                         override fun onChange(view: ColorBar, value: Int) {
                             mValueChangeByDragging = true
                             mHexEditor?.setText(mCurrentColor.setBlue(value).toHexColor())
+                            println("blue: $value")
                         }
                     })
                 }
@@ -258,14 +262,14 @@ class Dazzling : BottomSheetDialogFragment() {
     }
 
     private fun bindColorBarWithAnimate(color: Int) {
-        mAlpha?.setValueWithAnimate(Color.alpha(color))
+        if (isEnableAlpha) mAlpha?.setValueWithAnimate(Color.alpha(color))
         mRed?.setValueWithAnimate(Color.red(color))
         mGreen?.setValueWithAnimate(Color.green(color))
         mBlue?.setValueWithAnimate(Color.blue(color))
     }
 
     private fun bindColorBar(color: Int) {
-        mAlpha?.setValue(Color.alpha(color))
+        if (isEnableAlpha) mAlpha?.setValue(Color.alpha(color))
         mRed?.setValue(Color.red(color))
         mGreen?.setValue(Color.green(color))
         mBlue?.setValue(Color.blue(color))
