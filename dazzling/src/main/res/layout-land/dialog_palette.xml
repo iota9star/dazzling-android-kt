@@ -112,36 +112,48 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <io.nichijou.dazzling.ColorBar
-                android:id="@+id/alpha"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginTop="8dp"
-                android:padding="16dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
 
-            <io.nichijou.dazzling.ColorBar
-                android:id="@+id/red"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginTop="8dp"
-                android:padding="16dp"
-                app:dominant="#ff0000" />
+                <io.nichijou.dazzling.ColorBar
+                    android:id="@+id/alpha"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:padding="16dp" />
 
-            <io.nichijou.dazzling.ColorBar
-                android:id="@+id/green"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginTop="8dp"
-                android:padding="16dp"
-                app:dominant="#00ff00" />
+                <io.nichijou.dazzling.ColorBar
+                    android:id="@+id/red"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    app:dominant="#ff0000" />
+            </LinearLayout>
 
-            <io.nichijou.dazzling.ColorBar
-                android:id="@+id/blue"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginTop="8dp"
-                android:padding="16dp"
-                app:dominant="#0000ff" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <io.nichijou.dazzling.ColorBar
+                    android:id="@+id/green"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    app:dominant="#00ff00" />
+
+                <io.nichijou.dazzling.ColorBar
+                    android:id="@+id/blue"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    app:dominant="#0000ff" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

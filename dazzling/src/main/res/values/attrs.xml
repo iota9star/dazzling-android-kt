@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CheckColorView">
+    <declare-styleable name="ColorView">
         <attr name="color" format="color|reference" />
         <attr name="borderWidth" format="dimension" />
         <attr name="selectedSpace" format="dimension" />
         <attr name="checked" />
+    </declare-styleable>
+    <declare-styleable name="ColorBar">
+        <attr name="dominant" format="color|reference" />
+        <attr name="thumbColor" format="color|reference" />
+        <attr name="thumbRadius" format="dimension" />
+        <attr name="trackColor" format="color|reference" />
+        <attr name="trackSize" format="dimension" />
+        <attr name="value" format="integer" />
+        <attr name="android:textColor" />
+        <attr name="android:textSize" />
+        <attr name="android:typeface" />
     </declare-styleable>
 </resources>

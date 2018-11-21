@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import io.nichijou.dazzling.Dazzling
 import io.nichijou.dazzling.isColorDark
 import io.nichijou.dazzling.isColorLight
+import io.nichijou.dazzling.randomColor
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -16,12 +17,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        no_alpha_color.setOnClickListener {
+        def.setOnClickListener {
             Dazzling.showNow(supportFragmentManager) {
-                enableAlpha = false
-                backgroundColor = Color.WHITE
-                randomSize = 16
-                stepFactor = 0.13f
                 onColorChecked(this@MainActivity::setColor)
                 onOKPressed { c ->
                     it as Button
@@ -29,12 +26,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        alpha_color.setOnClickListener {
+        def.performClick()
+        disable_alpha.setOnClickListener {
             Dazzling.showNow(supportFragmentManager) {
-                enableAlpha = true
-                backgroundColor = Color.WHITE
-                randomSize = 16
-                stepFactor = 0.2f
+                isEnableAlpha = false
                 onColorChecked(this@MainActivity::setColor)
                 onOKPressed { c ->
                     it as Button
@@ -42,7 +37,67 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        alpha_color.performClick()
+        disable_bar.setOnClickListener {
+            Dazzling.showNow(supportFragmentManager) {
+                isEnableColorBar = false
+                onColorChecked(this@MainActivity::setColor)
+                onOKPressed { c ->
+                    it as Button
+                    it.tint(c, c.isColorDark())
+                }
+            }
+        }
+        preset.setOnClickListener {
+            Dazzling.showNow(supportFragmentManager) {
+                presetColors = mutableListOf(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.YELLOW, Color.MAGENTA, Color.BLACK, Color.WHITE)
+                onColorChecked(this@MainActivity::setColor)
+                onOKPressed { c ->
+                    it as Button
+                    it.tint(c, c.isColorDark())
+                }
+            }
+        }
+        selected.setOnClickListener {
+            Dazzling.showNow(supportFragmentManager) {
+                presetColors = mutableListOf(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.YELLOW, Color.MAGENTA, Color.BLACK, Color.WHITE)
+                preselectedColor = Color.YELLOW
+                onColorChecked(this@MainActivity::setColor)
+                onOKPressed { c ->
+                    it as Button
+                    it.tint(c, c.isColorDark())
+                }
+            }
+        }
+        step_factor.setOnClickListener {
+            Dazzling.showNow(supportFragmentManager) {
+                stepFactor = 1.3f
+                onColorChecked(this@MainActivity::setColor)
+                onOKPressed { c ->
+                    it as Button
+                    it.tint(c, c.isColorDark())
+                }
+            }
+        }
+        random_size.setOnClickListener {
+            Dazzling.showNow(supportFragmentManager) {
+                randomSize = 16
+                onColorChecked(this@MainActivity::setColor)
+                onOKPressed { c ->
+                    it as Button
+                    it.tint(c, c.isColorDark())
+                }
+            }
+        }
+        random_bg.setOnClickListener {
+            Dazzling.showNow(supportFragmentManager) {
+                backgroundColor = randomColor()
+                onColorChecked(this@MainActivity::setColor)
+                onOKPressed { c ->
+                    it as Button
+                    it.tint(c, c.isColorDark())
+                }
+            }
+        }
     }
 
     private fun setColor(c: Int) {

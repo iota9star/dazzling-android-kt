@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
@@ -23,24 +24,41 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.dialog_palette.view.*
 
 
 class Dazzling : BottomSheetDialogFragment() {
 
     private var mHexEditor: EditText? = null
     private var mPaletteWrapper: NestedScrollView? = null
-    private var mPreColor: CheckColorView? = null
+    private var mPreColor: ColorView? = null
     private var mPreColorWrapper: LinearLayout? = null
     private var mOkBtn: Button? = null
     private var mRandom: ImageButton? = null
-    private val mColorAdapter = CheckColorAdapter()
+    private var mPreset: ImageButton? = null
+    private var mTitle: TextView? = null
+    private var mColorList: RecyclerView? = null
+    private var mAlpha: ColorBar? = null
+    private var mRed: ColorBar? = null
+    private var mGreen: ColorBar? = null
+    private var mBlue: ColorBar? = null
+    private var mCurrentColor = 0
+    private val mColorAdapter = ColorAdapter()
 
     private var mOnOKPressed: ((color: Int) -> Unit)? = null
 
-    var enableAlpha = false
-    var presetColor: MutableList<Int>? = null
-    var selectedColor = 0
-    var randomSize = 11
+    private var mValueChangeByDragging = false
+    private var mIsInit = true
+
+    var isEnableAlpha = true
+    var isEnableColorBar = true
+    var presetColors: MutableList<Int>? = null
+    @ColorInt
+    var preselectedColor = Color.TRANSPARENT
+    var randomSize = 8
+        set(value) {
+            field = if (value < 0) 0 else value
+        }
     @FloatRange(from = 0.01, to = 2.0)
     var stepFactor = .2f
 
@@ -53,6 +71,7 @@ class Dazzling : BottomSheetDialogFragment() {
     private fun setPaletteWidgetColor() {
         val isDark = backgroundColor.isColorDark()
         val color = if (isDark) Color.WHITE else Color.BLACK
+        mTitle?.setTextColor(if (isDark) Color.WHITE else Color.BLACK)
         mPaletteWrapper?.apply {
             this.background = (background as GradientDrawable).apply {
                 setColor(backgroundColor)
@@ -70,6 +89,11 @@ class Dazzling : BottomSheetDialogFragment() {
                 setImageDrawable(drawable?.tint(color))
             }
         }
+        mPreset?.apply {
+            if (drawable != null) {
+                setImageDrawable(drawable?.tint(color))
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,66 +103,103 @@ class Dazzling : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_palette, container, false).apply {
-            mPreColor = findViewById(R.id.pre_color)
-            mHexEditor = findViewById<EditText>(R.id.hex_editor).apply {
-                addTextChangedListener(HexWatcher())
-                clearFocus()
+            mCurrentColor = if (isEnableAlpha) preselectedColor else preselectedColor.stripAlpha()
+            if (isEnableColorBar) {
+                mAlpha = findViewById(R.id.alpha)
+                if (isEnableAlpha) {
+                    mAlpha!!.apply {
+                        setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
+                            override fun onChange(view: ColorBar, value: Int) {
+                                mValueChangeByDragging = true
+                                mHexEditor?.setText(mCurrentColor.setAlpha(value).toHexColor())
+                            }
+                        })
+                    }
+                } else {
+                    (mAlpha!!.parent as ViewGroup).removeView(mAlpha)
+                }
+                mRed = findViewById<ColorBar>(R.id.red).apply {
+                    setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
+                        override fun onChange(view: ColorBar, value: Int) {
+                            mValueChangeByDragging = true
+                            mHexEditor?.setText(mCurrentColor.setRed(value).toHexColor())
+                        }
+                    })
+                }
+                mGreen = findViewById<ColorBar>(R.id.green).apply {
+                    setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
+                        override fun onChange(view: ColorBar, value: Int) {
+                            mValueChangeByDragging = true
+                            mHexEditor?.setText(mCurrentColor.setGreen(value).toHexColor())
+                        }
+                    })
+                }
+                mBlue = findViewById<ColorBar>(R.id.blue).apply {
+                    setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
+                        override fun onChange(view: ColorBar, value: Int) {
+                            mValueChangeByDragging = true
+                            mHexEditor?.setText(mCurrentColor.setBlue(value).toHexColor())
+                        }
+                    })
+                }
+            } else {
+                argb.visibility = View.GONE
             }
-            findViewById<RecyclerView>(R.id.color_list).apply {
-                val layoutManager = FlexboxLayoutManager(context)
-                layoutManager.flexDirection = FlexDirection.ROW
-                layoutManager.justifyContent = JustifyContent.FLEX_START
-                layoutManager.flexWrap = FlexWrap.WRAP
-                this.layoutManager = layoutManager
+            mTitle = findViewById(R.id.title)
+            mPreColor = findViewById(R.id.pre_color)
+            mColorList = findViewById<RecyclerView>(R.id.color_list).apply {
+                this.layoutManager = FlexboxLayoutManager(context).apply {
+                    this.flexDirection = FlexDirection.ROW
+                    this.justifyContent = JustifyContent.FLEX_START
+                    this.flexWrap = FlexWrap.WRAP
+                }
                 this.adapter = mColorAdapter
-                mColorAdapter.newColors(presetColor ?: randomColors(randomSize), selectedColor)
             }
             mRandom = findViewById<ImageButton>(R.id.random).apply {
                 setOnClickListener {
-                    mHexEditor?.text = null
-                    mPreColor?.color = Color.BLACK
-                    mColorAdapter.newColors(randomColors(randomSize), selectedColor)
+                    mValueChangeByDragging = false
+                    setDefault(false)
                 }
             }
-            findViewById<TextView>(R.id.title).setTextColor(if (backgroundColor.isColorLight()) Color.BLACK else Color.WHITE)
+            if (!presetColors.isNullOrEmpty()) {
+                mPreset = findViewById<ImageButton>(R.id.preset).apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        mValueChangeByDragging = false
+                        setDefault(true)
+                    }
+                }
+            }
             mPaletteWrapper = findViewById(R.id.palette_wrapper)
             mPreColorWrapper = findViewById(R.id.pre_color_wrapper)
             mOkBtn = findViewById<Button>(R.id.ok_btn).apply {
                 setOnClickListener {
-                    mOnOKPressed?.invoke(selectedColor)
+                    mOnOKPressed?.invoke(mCurrentColor)
                     dismiss()
                 }
             }
+            mHexEditor = findViewById<EditText>(R.id.hex_editor).apply {
+                addTextChangedListener(HexWatcher())
+                clearFocus()
+            }
             setPaletteWidgetColor()
+            mHexEditor?.setText(if (mCurrentColor == Color.TRANSPARENT) "#00000000" else mCurrentColor.toHexColor())
         }
     }
 
     internal inner class HexWatcher : TextWatcher {
+
         override fun afterTextChanged(s: Editable?) {
-            var hex = s.toString()
-            if (!hex.contains("#")) {
-                hex = "#$hex"
-                mHexEditor?.setText(hex)
-                mHexEditor?.setSelection(hex.length)
-                return
-            }
-            val hexLength: Int = if (enableAlpha) 9 else 7
-            if (hex.length > hexLength) {
-                val result = hex.substring(0, hexLength)
-                mHexEditor?.setText(result)
-                mHexEditor?.setSelection(result.length)
-                return
-            }
-            if (hex.contains(Regex("[a-f]"))) {
-                mHexEditor?.setText(hex.toUpperCase())
-                mHexEditor?.setSelection(hex.length)
+            val hex = s.toString()
+            val newHex = resolveHexEditorValue(hex)
+            if (hex != newHex) {
+                mHexEditor?.setText(newHex)
+                mHexEditor?.setSelection(newHex.length)
                 return
             }
             if (Regex("#[A-F0-9]{6}").matches(hex)
                 || Regex("#[A-F0-9]{8}").matches(hex)) {
-                val color = Color.parseColor(hex)
-                mPreColor?.color = color
-                mColorAdapter.newColors(color.stepColor(stepFactor), color)
+                updateColor(Color.parseColor(hex))
             }
         }
 
@@ -149,22 +210,84 @@ class Dazzling : BottomSheetDialogFragment() {
         }
     }
 
+    private fun resolveHexEditorValue(value: String): String {
+        var hex = value
+        if (!hex.contains("#")) {
+            hex = "#$hex"
+        }
+        val hexLength: Int = if (isEnableAlpha) 9 else 7
+        if (hex.length > hexLength) {
+            hex = hex.substring(0, hexLength)
+        }
+        if (hex.contains(Regex("[a-f]"))) {
+            hex = hex.toUpperCase()
+        }
+        return hex
+    }
+
+    private fun updateColor(color: Int) {
+        mCurrentColor = color
+        if (isEnableColorBar) {
+            if (mValueChangeByDragging) {
+                bindColorBar(color)
+            } else {
+                bindColorBarWithAnimate(color)
+            }
+        }
+        mPreColor?.setColor(color)
+        if (mIsInit) {
+            mIsInit = false
+            mColorAdapter.newColors(presetColors ?: randomColors(randomSize), preselectedColor)
+        } else {
+            mColorAdapter.newColors(color.stepColor(stepFactor), color)
+        }
+    }
+
+    private fun setDefault(isPreset: Boolean) {
+        mCurrentColor = preselectedColor
+        mHexEditor?.setText(if (mCurrentColor == Color.TRANSPARENT) "#00000000" else mCurrentColor.toHexColor())
+        mPreColor?.setColor(mCurrentColor)
+        if (isEnableColorBar) {
+            if (mValueChangeByDragging) {
+                bindColorBar(mCurrentColor)
+            } else {
+                bindColorBarWithAnimate(mCurrentColor)
+            }
+        }
+        mColorAdapter.newColors(if (isPreset) presetColors!! else randomColors(randomSize), mCurrentColor)
+    }
+
+    private fun bindColorBarWithAnimate(color: Int) {
+        mAlpha?.setValueWithAnimate(Color.alpha(color))
+        mRed?.setValueWithAnimate(Color.red(color))
+        mGreen?.setValueWithAnimate(Color.green(color))
+        mBlue?.setValueWithAnimate(Color.blue(color))
+    }
+
+    private fun bindColorBar(color: Int) {
+        mAlpha?.setValue(Color.alpha(color))
+        mRed?.setValue(Color.red(color))
+        mGreen?.setValue(Color.green(color))
+        mBlue?.setValue(Color.blue(color))
+    }
+
     fun onColorChecked(onColorChecked: (color: Int) -> Unit) {
         mColorAdapter.setOnColorChecked {
-            selectedColor = it
+            mValueChangeByDragging = false
+            mCurrentColor = it
             val hex = it.toHexColor()
-            mHexEditor?.setText(if (enableAlpha) hex else hex.substring(2))
+            mHexEditor?.setText(if (isEnableAlpha) hex else hex.substring(2))
             onColorChecked.invoke(it)
         }
     }
 
-    fun onOKPressed(onOK: (color: Int) -> Unit) {
-        mOnOKPressed = onOK
+    fun onOKPressed(onOKPressed: (color: Int) -> Unit) {
+        mOnOKPressed = onOKPressed
     }
 
     companion object {
 
-        private const val TAG = "dazzling_palette"
+        const val TAG = "dazzling_palette"
 
         fun show(fragmentManager: FragmentManager, tag: String = TAG, block: Dazzling.() -> Unit): Dazzling {
             val dazzling = Dazzling()

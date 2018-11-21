@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 
-internal class CheckColorAdapter : RecyclerView.Adapter<CheckColorAdapter.ViewHolder>() {
+internal class ColorAdapter : RecyclerView.Adapter<ColorAdapter.ViewHolder>() {
 
     private var mColors: MutableList<Int> = mutableListOf()
     private var mSelectedColor = 0
@@ -25,18 +25,17 @@ internal class CheckColorAdapter : RecyclerView.Adapter<CheckColorAdapter.ViewHo
 
     override fun getItemCount(): Int = mColors.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_color_check_view, parent, false) as CheckColorView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_color_check_view, parent, false) as ColorView)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(mColors[position])
 
-    internal inner class ViewHolder(private val view: CheckColorView) : RecyclerView.ViewHolder(view) {
+    internal inner class ViewHolder(private val view: ColorView) : RecyclerView.ViewHolder(view) {
 
         fun bind(color: Int) {
             view.setOnClickListener {
                 mSelectedColor = color
                 mHasSelected = false
                 mOnColorChecked?.invoke(color)
-                notifyDataSetChanged()
             }
             val checked = mSelectedColor == color
             view.setColorAndCheckState(color, checked && !mHasSelected)

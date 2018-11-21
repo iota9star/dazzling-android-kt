@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<io.nichijou.dazzling.CheckColorView xmlns:android="http://schemas.android.com/apk/res/android"
+<io.nichijou.dazzling.ColorView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="40dp"
     android:layout_height="40dp"
     android:layout_margin="4dp" />

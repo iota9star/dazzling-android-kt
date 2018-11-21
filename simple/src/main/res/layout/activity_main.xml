@@ -28,22 +28,67 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/no_alpha_color"
+                android:id="@+id/def"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/no_alpha_color" />
+                android:text="DEFAULT" />
 
             <Button
-                android:id="@+id/alpha_color"
+                android:id="@+id/disable_alpha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/alpha_color" />
+                android:layout_marginTop="8dp"
+                android:text="DISABLE ALPHA" />
+
+            <Button
+                android:id="@+id/disable_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="DISABLE BAR" />
+
+            <Button
+                android:id="@+id/preset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="PRESET" />
+
+            <Button
+                android:id="@+id/selected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="SELECTED COLOR" />
+
+            <Button
+                android:id="@+id/step_factor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="STEP FACTOR" />
+
+            <Button
+                android:id="@+id/random_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="RANDOM SIZE" />
+
+            <Button
+                android:id="@+id/random_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="RANDOM BACKGROUND COLOR" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
