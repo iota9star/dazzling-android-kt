@@ -2,11 +2,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 def homeUrl = 'https://github.com/iota9star'
-def siteUrl = 'https://github.com/iota9star/oops-android-kt'
-def gitUrl = 'https://github.com/iota9star/oops-android-kt.git'
+def siteUrl = 'https://github.com/iota9star/dazzling-android-kt'
+def gitUrl = 'https://github.com/iota9star/dazzling-android-kt.git'
 group = "io.nichijou"
 def libName = "dazzling"
-version = "0.0.2"
+version = "1.0.0"
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.kotlin.srcDirs

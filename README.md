@@ -11,7 +11,7 @@
 ``` gradle
 dependencies {
   // 其他
-  implementation 'io.nichijou:dazzling:0.0.2'
+  implementation 'io.nichijou:dazzling:1.0.0'
 }
 ```
 #### -> 快速使用
