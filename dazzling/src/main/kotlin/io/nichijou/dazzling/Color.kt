@@ -7,16 +7,16 @@ import androidx.core.graphics.ColorUtils
 import kotlin.random.Random
 
 @ColorInt
-internal fun Int.setAlpha(alpha: Int) = Color.argb(alpha, Color.red(this), Color.green(this), Color.blue(this))
+fun Int.setAlpha(alpha: Int) = Color.argb(alpha, Color.red(this), Color.green(this), Color.blue(this))
 
 @ColorInt
-internal fun Int.setRed(red: Int) = Color.argb(Color.alpha(this), red, Color.green(this), Color.blue(this))
+fun Int.setRed(red: Int) = Color.argb(Color.alpha(this), red, Color.green(this), Color.blue(this))
 
 @ColorInt
-internal fun Int.setGreen(green: Int) = Color.argb(Color.alpha(this), Color.red(this), green, Color.blue(this))
+fun Int.setGreen(green: Int) = Color.argb(Color.alpha(this), Color.red(this), green, Color.blue(this))
 
 @ColorInt
-internal fun Int.setBlue(blue: Int) = Color.argb(Color.alpha(this), Color.red(this), Color.green(this), blue)
+fun Int.setBlue(blue: Int) = Color.argb(Color.alpha(this), Color.red(this), Color.green(this), blue)
 
 @ColorInt
 fun Int.stripAlpha() = Color.rgb(Color.red(this), Color.green(this), Color.blue(this))

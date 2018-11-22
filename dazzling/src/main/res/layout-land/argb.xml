@@ -10,14 +10,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp">
 
-        <io.nichijou.dazzling.ColorBar
+        <io.nichijou.dazzling.internal.ColorBar
             android:id="@+id/alpha"
             android:layout_width="0dp"
             android:layout_height="42dp"
             android:layout_weight="1"
             android:padding="16dp" />
 
-        <io.nichijou.dazzling.ColorBar
+        <io.nichijou.dazzling.internal.ColorBar
             android:id="@+id/red"
             android:layout_width="0dp"
             android:layout_height="42dp"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp">
 
-        <io.nichijou.dazzling.ColorBar
+        <io.nichijou.dazzling.internal.ColorBar
             android:id="@+id/green"
             android:layout_width="0dp"
             android:layout_height="42dp"
@@ -39,7 +39,7 @@
             android:padding="16dp"
             app:dominant="#00ff00" />
 
-        <io.nichijou.dazzling.ColorBar
+        <io.nichijou.dazzling.internal.ColorBar
             android:id="@+id/blue"
             android:layout_width="0dp"
             android:layout_height="42dp"

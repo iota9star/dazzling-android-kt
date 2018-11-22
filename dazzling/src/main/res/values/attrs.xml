@@ -13,6 +13,7 @@
         <attr name="trackColor" format="color|reference" />
         <attr name="trackSize" format="dimension" />
         <attr name="value" format="integer" />
+        <attr name="duration" format="integer" />
         <attr name="android:textColor" />
         <attr name="android:textSize" />
         <attr name="android:typeface" />

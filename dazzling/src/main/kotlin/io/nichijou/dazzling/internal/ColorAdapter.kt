@@ -1,9 +1,10 @@
-package io.nichijou.dazzling
+package io.nichijou.dazzling.internal
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
+import io.nichijou.dazzling.R
 
 internal class ColorAdapter : RecyclerView.Adapter<ColorAdapter.ViewHolder>() {
 

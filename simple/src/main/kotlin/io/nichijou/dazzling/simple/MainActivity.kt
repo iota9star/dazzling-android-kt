@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        def.performClick()
         disable_alpha.setOnClickListener {
             Dazzling.showNow(supportFragmentManager) {
                 isEnableAlpha = false

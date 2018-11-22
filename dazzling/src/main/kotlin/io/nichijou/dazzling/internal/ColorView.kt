@@ -1,4 +1,4 @@
-package io.nichijou.dazzling
+package io.nichijou.dazzling.internal
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,10 +9,14 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.Checkable
 import androidx.annotation.ColorInt
+import io.nichijou.dazzling.R
+import io.nichijou.dazzling.adjustAlpha
+import io.nichijou.dazzling.brightenColor
+import io.nichijou.dazzling.isColorLight
 
 internal class ColorView(context: Context, attrs: AttributeSet?) : View(context, attrs), Checkable {
 
-    interface OnCheckedChangeListener {
+    internal interface OnCheckedChangeListener {
         fun onCheckedChanged(view: ColorView, color: Int)
     }
 
@@ -25,7 +29,7 @@ internal class ColorView(context: Context, attrs: AttributeSet?) : View(context,
     private val mSelectedSpace: Float
     private val mBorderWidth: Float
     private var mColor: Int
-    private var mTransparent: Drawable? = null
+    private var mTransBackground: Drawable? = null
 
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ColorView)
@@ -92,7 +96,7 @@ internal class ColorView(context: Context, attrs: AttributeSet?) : View(context,
         mPaint.color = mColor
         mPaint.setShadowLayer(mSelectedSpace, 0f, 0f, Color.DKGRAY.adjustAlpha(.08f))
         if (Color.alpha(mColor) < 255) {
-            if (mTransparent == null) {
+            if (mTransBackground == null) {
                 val lt: Int
                 val rb: Int
                 if (mChecked) {
@@ -102,10 +106,10 @@ internal class ColorView(context: Context, attrs: AttributeSet?) : View(context,
                     lt = mBorderWidth.toInt()
                     rb = (measuredWidth - mSelectedSpace * 2).toInt()
                 }
-                mTransparent = context.drawableRes(R.drawable.bg_transparent)
-                mTransparent?.setBounds(lt, lt, rb, rb)
+                mTransBackground = context.drawableRes(R.drawable.bg_transparent)
+                mTransBackground?.setBounds(lt, lt, rb, rb)
             }
-            mTransparent?.draw(canvas)
+            mTransBackground?.draw(canvas)
         }
         canvas.drawCircle(
             measuredWidth / 2f,
@@ -122,7 +126,8 @@ internal class ColorView(context: Context, attrs: AttributeSet?) : View(context,
     }
 
     override fun onDetachedFromWindow() {
-        mTransparent = null
+        mTransBackground = null
+        mOnCheckedChangeListener = null
         super.onDetachedFromWindow()
     }
 

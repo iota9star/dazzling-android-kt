@@ -1,5 +1,6 @@
 package io.nichijou.dazzling
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -8,8 +9,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,7 +26,15 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.nichijou.dazzling.internal.ColorAdapter
+import io.nichijou.dazzling.internal.ColorBar
+import io.nichijou.dazzling.internal.ColorView
+import io.nichijou.dazzling.internal.dp2px
+import io.nichijou.dazzling.internal.isLandscape
+import io.nichijou.dazzling.internal.isTablet
+import io.nichijou.dazzling.internal.tint
 import kotlinx.android.synthetic.main.dialog_palette.view.*
 
 
@@ -54,7 +65,7 @@ class Dazzling : BottomSheetDialogFragment() {
     var isEnableColorBar = true
     var presetColors: MutableList<Int>? = null
     @ColorInt
-    var preselectedColor = Color.TRANSPARENT
+    var preselectedColor = Color.argb(255, 127, 127, 127)
     var randomSize = 8
         set(value) {
             field = if (value < 0) 0 else value
@@ -96,6 +107,18 @@ class Dazzling : BottomSheetDialogFragment() {
         }
     }
 
+    private val mOnThumbInDraggingListener = object : ColorBar.OnThumbInDraggingListener {
+        override fun onChange(view: ColorBar, value: Int) {
+            mValueChangeByDragging = true
+            when (view.id) {
+                R.id.alpha -> mHexEditor?.setText(mCurrentColor.setAlpha(value).toHexColor())
+                R.id.red -> mHexEditor?.setText(mCurrentColor.setRed(value).toHexColor())
+                R.id.green -> mHexEditor?.setText(mCurrentColor.setGreen(value).toHexColor())
+                R.id.blue -> mHexEditor?.setText(mCurrentColor.setBlue(value).toHexColor())
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.Dazzling_BottomSheetDialog)
@@ -103,48 +126,24 @@ class Dazzling : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_palette, container, false).apply {
-            mCurrentColor = preselectedColor
+            mCurrentColor = if (isEnableAlpha) preselectedColor else preselectedColor.stripAlpha()
             if (isEnableColorBar) {
                 if (isEnableAlpha) {
                     LayoutInflater.from(context).inflate(R.layout.argb, argb, true)
                     mAlpha = findViewById<ColorBar>(R.id.alpha).apply {
-                        setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
-                            override fun onChange(view: ColorBar, value: Int) {
-                                mValueChangeByDragging = true
-                                mHexEditor?.setText(mCurrentColor.setAlpha(value).toHexColor())
-                                println("alpha: $value")
-                            }
-                        })
+                        setOnValueChangeListener(mOnThumbInDraggingListener)
                     }
                 } else {
                     LayoutInflater.from(context).inflate(R.layout.rgb, argb, true)
                 }
                 mRed = findViewById<ColorBar>(R.id.red).apply {
-                    setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
-                        override fun onChange(view: ColorBar, value: Int) {
-                            mValueChangeByDragging = true
-                            mHexEditor?.setText(mCurrentColor.setRed(value).toHexColor())
-                            println("red: $value")
-                        }
-                    })
+                    setOnValueChangeListener(mOnThumbInDraggingListener)
                 }
                 mGreen = findViewById<ColorBar>(R.id.green).apply {
-                    setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
-                        override fun onChange(view: ColorBar, value: Int) {
-                            mValueChangeByDragging = true
-                            mHexEditor?.setText(mCurrentColor.setGreen(value).toHexColor())
-                            println("green: $value")
-                        }
-                    })
+                    setOnValueChangeListener(mOnThumbInDraggingListener)
                 }
                 mBlue = findViewById<ColorBar>(R.id.blue).apply {
-                    setOnValueChangeListener(object : ColorBar.OnThumbInDraggingListener {
-                        override fun onChange(view: ColorBar, value: Int) {
-                            mValueChangeByDragging = true
-                            mHexEditor?.setText(mCurrentColor.setBlue(value).toHexColor())
-                            println("blue: $value")
-                        }
-                    })
+                    setOnValueChangeListener(mOnThumbInDraggingListener)
                 }
             } else {
                 argb.visibility = View.GONE
@@ -191,6 +190,30 @@ class Dazzling : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            setOnShowListener {
+                if (context.isLandscape() || context.isTablet()) {
+                    window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                }
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet).let {
+                    val behavior = BottomSheetBehavior.from(it)
+                    behavior.peekHeight = it.measuredHeight
+                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+        })
+    }
+
     internal inner class HexWatcher : TextWatcher {
 
         override fun afterTextChanged(s: Editable?) {
@@ -221,7 +244,8 @@ class Dazzling : BottomSheetDialogFragment() {
         }
         val hexLength: Int = if (isEnableAlpha) 9 else 7
         if (hex.length > hexLength) {
-            hex = hex.substring(0, hexLength)
+            hex = if (Regex("#[A-F0-9]{8}").matches(hex)) "#" + hex.substring(hex.length - hexLength + 1, hex.length)
+            else hex.substring(0, hexLength)
         }
         if (hex.contains(Regex("[a-f]"))) {
             hex = hex.toUpperCase()

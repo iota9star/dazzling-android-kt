@@ -1,4 +1,4 @@
-package io.nichijou.dazzling
+package io.nichijou.dazzling.internal
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -16,18 +16,24 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import io.nichijou.dazzling.R
+import io.nichijou.dazzling.adjustAlpha
+import io.nichijou.dazzling.brightenColor
 
 internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
-    interface OnThumbInDraggingListener {
+    internal interface OnThumbInDraggingListener {
         fun onChange(view: ColorBar, value: Int)
     }
 
+    companion object {
+        private const val COLOR_DELTA = 255
+        private const val SANS = 1
+        private const val SERIF = 2
+        private const val MONOSPACE = 3
+    }
+
     private var mOnThumbDraggingListener: OnThumbInDraggingListener? = null
-    private val COLOR_DELTA = 255
-    private val SANS = 1
-    private val SERIF = 2
-    private val MONOSPACE = 3
     private val mPaint = Paint()
     private val mColor: Int
     private val mTextSize: Float
@@ -46,6 +52,7 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
     private var mTouchOffset = 0f
     private var mOnValueChanged = false
     private var mIsInit = true
+    private var mDuration = 0
 
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ColorBar)
@@ -57,6 +64,7 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
         mThumbRadius = ta.getDimension(R.styleable.ColorBar_thumbRadius, this.context.dp2px(18f).toFloat())
         mThumbColor = ta.getColor(R.styleable.ColorBar_thumbColor, Color.WHITE)
         mColor = ta.getColor(R.styleable.ColorBar_dominant, Color.TRANSPARENT)
+        mDuration = ta.getInt(R.styleable.ColorBar_duration, 640)
         mValue = ta.getInt(R.styleable.ColorBar_value, 0)
         if (mValue > 255) mValue = 255
         if (mValue < 0) mValue = 0
@@ -72,30 +80,29 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
     private var mValueChangeAnimator: ValueAnimator? = null
 
     fun setValueWithAnimate(value: Int) {
+        mIsInit = false
         if (mValueChangeAnimator != null && mValueChangeAnimator!!.isRunning) {
             mValueChangeAnimator!!.cancel()
             mValueChangeAnimator = null
         }
-        mValueChangeAnimator = ValueAnimator.ofInt(0, value).apply {
-            duration = 1024
-            interpolator = DecelerateInterpolator()
-            addUpdateListener {
-                mValue = it.animatedValue as Int
-                invalidate()
+        if (value == 0) {
+            mValue = value
+            invalidate()
+        } else {
+            mValueChangeAnimator = ValueAnimator.ofInt(0, value).apply {
+                duration = mDuration.toLong()
+                interpolator = DecelerateInterpolator()
+                addUpdateListener {
+                    mValue = it.animatedValue as Int
+                    invalidate()
+                }
+                start()
             }
-            start()
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        if (mValueChangeAnimator != null && mValueChangeAnimator!!.isRunning) {
-            mValueChangeAnimator!!.cancel()
-            mValueChangeAnimator = null
-        }
-        super.onDetachedFromWindow()
     }
 
     fun setValue(value: Int) {
+        mIsInit = false
         mValue = value
         invalidate()
     }
@@ -121,12 +128,10 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
 
     override fun onDraw(canvas: Canvas) {
         if (mIsInit) {
-            mIsInit = false
             setValueWithAnimate(mValue)
             return
         }
         val factor = mValue * 1f / COLOR_DELTA
-        println("color: $mColor,factor: $factor,value: $mValue")
         mValueCenterX = mContentWidth * factor + mStartX
         drawBackgroundTrack(canvas, mPaint, mStartX, mCenterY, mStopX, mCenterY)
         drawValueTrack(canvas, mPaint, mStartX, mCenterY, mValueCenterX, mCenterY, factor)
@@ -230,11 +235,13 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
         return true
     }
 
-    private fun isTrackTouched(event: MotionEvent): Boolean {
-        return event.x >= paddingLeft
-            && event.x <= measuredWidth - paddingRight
-            && event.y >= paddingTop
-            && event.y <= measuredHeight - paddingBottom
+    override fun onDetachedFromWindow() {
+        if (mValueChangeAnimator != null && mValueChangeAnimator!!.isRunning) {
+            mValueChangeAnimator!!.cancel()
+            mValueChangeAnimator = null
+        }
+        mOnThumbDraggingListener = null
+        super.onDetachedFromWindow()
     }
 
     override fun onSaveInstanceState(): Parcelable? {

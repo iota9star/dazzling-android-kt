@@ -3,6 +3,7 @@ package io.nichijou.dazzling.simple
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
@@ -13,9 +14,9 @@ import androidx.annotation.ColorRes
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import io.nichijou.dazzling.brightenColor
 import io.nichijou.dazzling.isColorDark
-import io.nichijou.dazzling.tint
 
 internal fun Context.colorRes(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)
 
@@ -72,4 +73,21 @@ internal fun AppCompatActivity.setLightStatusBarCompat(isLight: Boolean) {
             flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
         }
     }
+}
+
+
+internal fun Drawable.tint(@ColorInt color: Int): Drawable {
+    var d: Drawable = this
+    d = DrawableCompat.wrap(d.mutate())
+    DrawableCompat.setTintMode(d, PorterDuff.Mode.SRC_IN)
+    DrawableCompat.setTint(d, color)
+    return d
+}
+
+internal fun Drawable.tint(sl: ColorStateList?): Drawable {
+    if (sl == null) return this
+    var d: Drawable = this
+    d = DrawableCompat.wrap(d.mutate())
+    DrawableCompat.setTintList(d, sl)
+    return d
 }
