@@ -32,7 +32,29 @@ Dazzling.showNow(supportFragmentManager) { //BottomSheetDialogFragment对应的�
     }
 }
 ```
-
+#### -> 提供的颜色API
+``` kotlin
+Int.setAlpha(alpha: Int) // 修改颜色的alpha值 0~255
+Int.setRed(red: Int) // 修改颜色的red值 0~255
+Int.setGreen(green: Int) // 修改颜色的green值 0~255
+Int.setBlue(blue: Int) // 修改颜色的blue值 0~255
+Int.stripAlpha() // 去除颜色的alpha值
+Int.adjustAlpha(@FloatRange(from = 0.0, to = 1.0) factor: Float) // 修改颜色的alpha值 0.0~1.0
+Int.saturationColor(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的饱和度
+Int.brightenColor(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的亮度
+Int.blendWith(@ColorInt color: Int, ratio: Float) // 按比例修改颜色
+Int.titleColor() // 当前颜色背景适合的标题字体颜色
+Int.bodyColor() // 当前颜色背景适合的内容字体颜色
+Int.isColorLight() // 当前颜色是否为亮色
+Int.isColorDark() // 当前颜色是否为暗色
+Int.isColorLight(@ColorInt bgColor: Int) // 在有透明度时，看到的颜色是否为亮色
+Int.stepColor(@FloatRange(from = 0.01, to = 2.00) factor: Float = 0.20f) // 返回颜色的色阶 0.01~2.00
+Int.colorAlpha() // 当前颜色的alpha值 0~255
+Int.toHexColor() // 当前颜色hex值 eg: Color.WHITE.toHexColor() -> FFFFFFFF
+randomColor() // 返回一个随机颜色，不包含alpha值
+randomColors(size: Int) // 返回一个指定数量的随机颜色集合
+randomColors(range: IntRange) // 返回一个范围内数量的随机颜色集合
+```
 ----
 ### Licenses
 ``` plain

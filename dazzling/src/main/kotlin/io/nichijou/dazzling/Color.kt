@@ -22,7 +22,7 @@ fun Int.setBlue(blue: Int) = Color.argb(Color.alpha(this), Color.red(this), Colo
 fun Int.stripAlpha() = Color.rgb(Color.red(this), Color.green(this), Color.blue(this))
 
 @ColorInt
-fun Int.adjustAlpha(factor: Float) = Color.argb(Math.round(Color.alpha(this) * factor), Color.red(this), Color.green(this), Color.blue(this))
+fun Int.adjustAlpha(@FloatRange(from = 0.0, to = 1.0) factor: Float) = Color.argb(Math.round(Color.alpha(this) * factor), Color.red(this), Color.green(this), Color.blue(this))
 
 @ColorInt
 fun Int.saturationColor(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
@@ -89,7 +89,7 @@ fun Int.isColorDark() = !this.isColorLight()
 
 fun Int.isColorLight(@ColorInt bgColor: Int) = if (Color.alpha(this) < 128) bgColor.isColorLight() else this.isColorLight()
 
-fun Int.stepColor(@FloatRange(from = 0.01, to = 2.0) factor: Float = 0.2f): MutableList<Int> {
+fun Int.stepColor(@FloatRange(from = 0.01, to = 2.00) factor: Float = 0.2f): MutableList<Int> {
     val colors = mutableListOf<Int>()
     val alpha = this.colorAlpha()
     for (i in 0..200 step (factor * 100).toInt()) {
