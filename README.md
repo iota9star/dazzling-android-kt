@@ -42,7 +42,7 @@ Int.stripAlpha() // 去除颜色的alpha值
 Int.adjustAlpha(@FloatRange(from = 0.0, to = 1.0) factor: Float) // 修改颜色的alpha值 0.0~1.0
 Int.saturationColor(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的饱和度
 Int.brightenColor(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的亮度
-Int.blendWith(@ColorInt color: Int, ratio: Float) // 按比例修改颜色
+Int.blendWith(@ColorInt color: Int, ratio: Float) // 按比例混合颜色
 Int.titleColor() // 当前颜色背景适合的标题字体颜色
 Int.bodyColor() // 当前颜色背景适合的内容字体颜色
 Int.isColorLight() // 当前颜色是否为亮色
