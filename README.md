@@ -14,7 +14,7 @@ dependencies {
   implementation 'io.nichijou:dazzling:0.0.2'
 }
 ```
-#### -> API
+#### -> 快速使用
 ``` kotlin
 Dazzling.showNow(supportFragmentManager) { //BottomSheetDialogFragment对应的三个show方法
     isEnableAlpha = false // 是否支持alpha值，默认为true
