@@ -70,14 +70,30 @@ class Dazzling : BottomSheetDialogFragment() {
         set(value) {
             field = if (value < 0) 0 else value
         }
-    @FloatRange(from = 0.01, to = 2.0)
+    @FloatRange(from = 0.01, to = 2.00)
     var stepFactor = .2f
+        set(value) {
+            field = when {
+                value < 0.01f -> 0.01f
+                value > 2.00f -> 2f
+                else -> value
+            }
+        }
 
     var backgroundColor = Color.WHITE
         set(value) {
             field = value
             setPaletteWidgetColor()
         }
+
+    fun alphaValue() = if (isEnableAlpha) mAlpha?.getValue() else 255
+    fun redValue() = mRed?.getValue()
+    fun greenValue() = mGreen?.getValue()
+    fun blueValue() = mBlue?.getValue()
+
+    fun color() = mCurrentColor
+    fun hexColor() = resolveHexValue(mCurrentColor.toHexColor())
+
 
     private fun setPaletteWidgetColor() {
         val isDark = backgroundColor.isColorDark()
@@ -115,6 +131,18 @@ class Dazzling : BottomSheetDialogFragment() {
                 R.id.red -> mHexEditor?.setText(mCurrentColor.setRed(value).toHexColor())
                 R.id.green -> mHexEditor?.setText(mCurrentColor.setGreen(value).toHexColor())
                 R.id.blue -> mHexEditor?.setText(mCurrentColor.setBlue(value).toHexColor())
+            }
+        }
+    }
+
+    private val mOnClickListener = View.OnClickListener {
+        mValueChangeByDragging = false
+        when (it.id) {
+            R.id.preset -> setDefault(true)
+            R.id.random -> setDefault(false)
+            R.id.ok_btn -> {
+                mOnOKPressed?.invoke(mCurrentColor)
+                dismiss()
             }
         }
     }
@@ -159,27 +187,18 @@ class Dazzling : BottomSheetDialogFragment() {
                 this.adapter = mColorAdapter
             }
             mRandom = findViewById<ImageButton>(R.id.random).apply {
-                setOnClickListener {
-                    mValueChangeByDragging = false
-                    setDefault(false)
-                }
+                setOnClickListener(mOnClickListener)
             }
             if (!presetColors.isNullOrEmpty()) {
                 mPreset = findViewById<ImageButton>(R.id.preset).apply {
                     visibility = View.VISIBLE
-                    setOnClickListener {
-                        mValueChangeByDragging = false
-                        setDefault(true)
-                    }
+                    setOnClickListener(mOnClickListener)
                 }
             }
             mPaletteWrapper = findViewById(R.id.palette_wrapper)
             mPreColorWrapper = findViewById(R.id.pre_color_wrapper)
             mOkBtn = findViewById<Button>(R.id.ok_btn).apply {
-                setOnClickListener {
-                    mOnOKPressed?.invoke(mCurrentColor)
-                    dismiss()
-                }
+                setOnClickListener(mOnClickListener)
             }
             mHexEditor = findViewById<EditText>(R.id.hex_editor).apply {
                 addTextChangedListener(HexWatcher())
@@ -218,7 +237,7 @@ class Dazzling : BottomSheetDialogFragment() {
 
         override fun afterTextChanged(s: Editable?) {
             val hex = s.toString()
-            val newHex = resolveHexEditorValue(hex)
+            val newHex = resolveHexValue(hex)
             if (hex != newHex) {
                 mHexEditor?.setText(newHex)
                 mHexEditor?.setSelection(newHex.length)
@@ -237,7 +256,7 @@ class Dazzling : BottomSheetDialogFragment() {
         }
     }
 
-    private fun resolveHexEditorValue(value: String): String {
+    private fun resolveHexValue(value: String): String {
         var hex = value
         if (!hex.contains("#")) {
             hex = "#$hex"
@@ -313,9 +332,86 @@ class Dazzling : BottomSheetDialogFragment() {
         mOnOKPressed = onOKPressed
     }
 
+    class Builder {
+
+        interface OnOKPressed {
+            fun onPressed(value: Int)
+        }
+
+        interface OnColorChecked {
+            fun onChecked(value: Int)
+        }
+
+        private val dazzling = Dazzling()
+
+        fun setOnOKPressed(onOKPressed: OnOKPressed): Builder {
+            dazzling.onOKPressed {
+                onOKPressed.onPressed(it)
+            }
+            return this
+        }
+
+        fun setOnColorChecked(onColorChecked: OnColorChecked): Builder {
+            dazzling.onColorChecked { onColorChecked.onChecked(it) }
+            return this
+        }
+
+        fun isEnableAlpha(enabled: Boolean): Builder {
+            dazzling.isEnableAlpha = enabled
+            return this
+        }
+
+        fun isEnableColorBar(enabled: Boolean): Builder {
+            dazzling.isEnableColorBar = enabled
+            return this
+        }
+
+        fun setPresetColors(presetColors: MutableList<Int>): Builder {
+            dazzling.presetColors = presetColors
+            return this
+        }
+
+        fun setPreselectedColor(@ColorInt preselectedColor: Int): Builder {
+            dazzling.preselectedColor = preselectedColor
+            return this
+        }
+
+        fun setRandomSize(randomSize: Int): Builder {
+            dazzling.randomSize = randomSize
+            return this
+        }
+
+        fun setStepFactor(@FloatRange(from = 0.01, to = 2.00) stepFactor: Float): Builder {
+            dazzling.stepFactor = stepFactor
+            return this
+        }
+
+        fun setBackgroundColor(@ColorInt backgroundColor: Int): Builder {
+            dazzling.backgroundColor = backgroundColor
+            return this
+        }
+
+        fun show(fragmentManager: FragmentManager, tag: String = TAG): Dazzling {
+            dazzling.show(fragmentManager, tag)
+            return dazzling
+        }
+
+        fun show(transaction: FragmentTransaction, tag: String = TAG): Dazzling {
+            dazzling.show(transaction, tag)
+            return dazzling
+        }
+
+        fun showNow(fragmentManager: FragmentManager, tag: String = TAG): Dazzling {
+            dazzling.showNow(fragmentManager, tag)
+            return dazzling
+        }
+    }
+
     companion object {
 
         const val TAG = "dazzling_palette"
+
+        fun builder() = Builder()
 
         fun show(fragmentManager: FragmentManager, tag: String = TAG, block: Dazzling.() -> Unit): Dazzling {
             val dazzling = Dazzling()

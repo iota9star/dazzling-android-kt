@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        random_bg.setOnClickListener {
+        change_bg.setOnClickListener {
             Dazzling.showNow(supportFragmentManager) {
                 backgroundColor = randomColor()
                 onColorChecked(this@MainActivity::setColor)
@@ -96,6 +96,28 @@ class MainActivity : AppCompatActivity() {
                     it.tint(c, c.isColorDark())
                 }
             }
+        }
+        java.setOnClickListener {
+            Dazzling.builder()
+                .isEnableAlpha(true)
+                .isEnableColorBar(true)
+                .setBackgroundColor(Color.BLACK)
+                .setPreselectedColor(Color.YELLOW)
+                .setRandomSize(24)
+                .setStepFactor(.1f)
+                .setPresetColors(mutableListOf(Color.YELLOW, Color.WHITE, Color.BLACK, Color.MAGENTA, Color.CYAN, Color.BLUE))
+                .setOnColorChecked(object : Dazzling.Builder.OnColorChecked {
+                    override fun onChecked(value: Int) {
+                        setColor(value)
+                    }
+                })
+                .setOnOKPressed(object : Dazzling.Builder.OnOKPressed {
+                    override fun onPressed(value: Int) {
+                        it as Button
+                        it.tint(value, value.isColorDark())
+                    }
+                })
+                .showNow(getSupportFragmentManager())
         }
     }
 

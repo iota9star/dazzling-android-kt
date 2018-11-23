@@ -84,11 +84,18 @@
                 android:text="RANDOM SIZE" />
 
             <Button
-                android:id="@+id/random_bg"
+                android:id="@+id/change_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="RANDOM BACKGROUND COLOR" />
+                android:text="CHANGE BACKGROUND COLOR" />
+
+            <Button
+                android:id="@+id/java"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="JAVA TEST" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

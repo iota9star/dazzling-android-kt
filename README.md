@@ -11,17 +11,18 @@
 ``` gradle
 dependencies {
   // 其他
-  implementation 'io.nichijou:dazzling:1.0.0'
+  implementation 'io.nichijou:dazzling:1.0.1'
 }
 ```
 #### -> 快速使用
 ``` kotlin
-Dazzling.showNow(supportFragmentManager) { //BottomSheetDialogFragment对应的三个show方法
+// kotlin version
+val dazzling = Dazzling.showNow(supportFragmentManager) { //BottomSheetDialogFragment对应的三个show方法
     isEnableAlpha = false // 是否支持alpha值，默认为true
     isEnableColorBar = false // 是否开启滑动条，默认为true
     presetColors = mutableListOf(Color.WHITE, Color.BLACK) // 设置的默认颜色，默认显示随机色
     preselectedColor = Color.YELLOW // 预先选中的颜色，默认为#7f7f7f
-    backgroundColor = Color.WHITE // 调色板的背景色，默认为Color.WHITE
+    backgroundColor = Color.WHITE // 调色板的背景色，默认为Color.WHITE 当前属性支持动态修改，其余暂无法动态修改
     randomSize = 16 // 显示随机颜色的个数，取值范围 > 0 默认为 8
     stepFactor = .5f // 颜色的色阶因子，取值范围 0.0f~2.0f 默认为 .2f
     onColorChecked { color ->
@@ -31,6 +32,26 @@ Dazzling.showNow(supportFragmentManager) { //BottomSheetDialogFragment对应的�
         // 当确认按钮被触发时的回调，返回选中的颜色同时关闭调色板
     }
 }
+```
+``` java
+// java version
+Dazzling dazzling = Dazzling.builder() // 下面的配置与kotlin version一致
+    .isEnableAlpha(true)
+    .isEnableColorBar(true)
+    .setBackgroundColor(Color.BLACK)
+    .setPreselectedColor(Color.YELLOW)
+    .setRandomSize(24)
+    .setStepFactor(.1f)
+    .setPresetColors(mutableListOf(Color.YELLOW, Color.WHITE, Color.BLACK, Color.MAGENTA, Color.CYAN, Color.BLUE))
+    .setOnColorChecked(object : Dazzling.Builder.OnColorChecked {
+        override fun onChecked(value: Int) {
+        }
+    })
+    .setOnOKPressed(object : Dazzling.Builder.OnOKPressed {
+        override fun onPressed(value: Int) {
+        }
+    })
+    .showNow(getSupportFragmentManager())
 ```
 #### -> 提供的颜色API
 ``` kotlin
@@ -55,6 +76,16 @@ randomColor() // 返回一个随机颜色，不包含alpha值
 randomColors(size: Int) // 返回一个指定数量的随机颜色集合
 randomColors(range: IntRange) // 返回一个范围内数量的随机颜色集合
 ```
+#### -> 额外的方法
+``` kotlin
+dazzling.color() // 返回当前颜色
+dazzling.hexColor() // 返回当前颜色的HEX值 eg: #FFFFFF
+dazzling.alphaValue() // 返回当前颜色的alpha值
+dazzling.redValue() // 返回当前颜色的red值
+dazzling.greenValue() // 返回当前颜色的green值
+dazzling.blueValue() // 返回当前颜色的blue值
+```
+
 ----
 ### Licenses
 ``` plain
