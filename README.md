@@ -11,7 +11,7 @@
 ``` gradle
 dependencies {
   // 其他
-  implementation 'io.nichijou:dazzling:1.0.1'
+  implementation 'io.nichijou:dazzling:1.0.2'
 }
 ```
 #### -> 快速使用
@@ -53,7 +53,24 @@ Dazzling dazzling = Dazzling.builder() // 下面的配置与kotlin version一致
     })
     .showNow(getSupportFragmentManager())
 ```
+#### -> 额外的方法
+``` kotlin
+dazzling.color() // 返回当前颜色
+dazzling.hexColor() // 返回当前颜色的HEX值 eg: #FFFFFF
+dazzling.alphaValue() // 返回当前颜色的alpha值
+dazzling.redValue() // 返回当前颜色的red值
+dazzling.greenValue() // 返回当前颜色的green值
+dazzling.blueValue() // 返回当前颜色的blue值
+```
+#### -> 引入Color Ext到项目中
+``` gradle
+dependencies {
+  // 其他
+  implementation 'io.nichijou:color_ext:1.0.0'
+}
+```
 #### -> 提供的颜色API
++ Kotlin 下使用
 ``` kotlin
 Int.setAlpha(alpha: Int) // 修改颜色的alpha值 0~255
 Int.setRed(red: Int) // 修改颜色的red值 0~255
@@ -61,8 +78,8 @@ Int.setGreen(green: Int) // 修改颜色的green值 0~255
 Int.setBlue(blue: Int) // 修改颜色的blue值 0~255
 Int.stripAlpha() // 去除颜色的alpha值
 Int.adjustAlpha(@FloatRange(from = 0.0, to = 1.0) factor: Float) // 修改颜色的alpha值 0.0~1.0
-Int.saturationColor(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的饱和度
-Int.brightenColor(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的亮度
+Int.saturate(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的饱和度
+Int.lighten(@FloatRange(from = 0.0, to = 2.0) by: Float) // 修改颜色的亮度
 Int.blendWith(@ColorInt color: Int, ratio: Float) // 按比例混合颜色
 Int.titleColor() // 当前颜色背景适合的标题字体颜色
 Int.bodyColor() // 当前颜色背景适合的内容字体颜色
@@ -76,15 +93,7 @@ randomColor() // 返回一个随机颜色，不包含alpha值
 randomColors(size: Int) // 返回一个指定数量的随机颜色集合
 randomColors(range: IntRange) // 返回一个范围内数量的随机颜色集合
 ```
-#### -> 额外的方法
-``` kotlin
-dazzling.color() // 返回当前颜色
-dazzling.hexColor() // 返回当前颜色的HEX值 eg: #FFFFFF
-dazzling.alphaValue() // 返回当前颜色的alpha值
-dazzling.redValue() // 返回当前颜色的red值
-dazzling.greenValue() // 返回当前颜色的green值
-dazzling.blueValue() // 返回当前颜色的blue值
-```
++  若使用Java，则使用ColorUtils.``拓展方法名``调用
 
 ----
 ### Licenses

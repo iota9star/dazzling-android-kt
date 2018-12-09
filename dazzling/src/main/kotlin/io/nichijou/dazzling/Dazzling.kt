@@ -28,6 +28,15 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.nichijou.color.isColorDark
+import io.nichijou.color.randomColors
+import io.nichijou.color.setAlpha
+import io.nichijou.color.setBlue
+import io.nichijou.color.setGreen
+import io.nichijou.color.setRed
+import io.nichijou.color.stepColor
+import io.nichijou.color.stripAlpha
+import io.nichijou.color.toHexColor
 import io.nichijou.dazzling.internal.ColorAdapter
 import io.nichijou.dazzling.internal.ColorBar
 import io.nichijou.dazzling.internal.ColorView

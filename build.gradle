@@ -7,7 +7,7 @@ buildscript {
         maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-alpha04'
+        classpath 'com.android.tools.build:gradle:3.4.0-alpha07'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
@@ -24,8 +24,4 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-tasks.withType(Javadoc).all {
-    enabled = false
 }

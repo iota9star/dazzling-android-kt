@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import io.nichijou.color.isColorDark
+import io.nichijou.color.isColorLight
+import io.nichijou.color.randomColor
 import io.nichijou.dazzling.Dazzling
-import io.nichijou.dazzling.isColorDark
-import io.nichijou.dazzling.isColorLight
-import io.nichijou.dazzling.randomColor
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

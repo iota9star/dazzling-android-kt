@@ -1,4 +1,6 @@
-package io.nichijou.dazzling
+@file:JvmName("ColorUtils")
+
+package io.nichijou.color
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
@@ -25,7 +27,7 @@ fun Int.stripAlpha() = Color.rgb(Color.red(this), Color.green(this), Color.blue(
 fun Int.adjustAlpha(@FloatRange(from = 0.0, to = 1.0) factor: Float) = Color.argb(Math.round(Color.alpha(this) * factor), Color.red(this), Color.green(this), Color.blue(this))
 
 @ColorInt
-fun Int.saturationColor(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
+fun Int.saturate(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
     if (by == 1f) return this
     val hsv = FloatArray(3)
     Color.colorToHSV(this, hsv)
@@ -34,7 +36,7 @@ fun Int.saturationColor(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
 }
 
 @ColorInt
-fun Int.brightenColor(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
+fun Int.lighten(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
     if (by == 1f) return this
     val hsv = FloatArray(3)
     Color.colorToHSV(this, hsv)
@@ -54,13 +56,12 @@ fun Int.blendWith(@ColorInt color: Int, ratio: Float): Int {
 
 @ColorInt
 fun Int.titleColor(): Int {
-    val minContrast = 3.0f
     val alpha: Int
     if (this.isColorLight()) {
-        alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, minContrast)
+        alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, 3.0f)
         if (alpha == -1) return Color.BLACK
     } else {
-        alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, minContrast)
+        alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, 3.0f)
         if (alpha == -1) return Color.WHITE
     }
     return ColorUtils.setAlphaComponent(Color.BLACK, alpha)
@@ -68,16 +69,15 @@ fun Int.titleColor(): Int {
 
 @ColorInt
 fun Int.bodyColor(): Int {
-    val minContrast = 4.5f
     val alpha: Int
     when {
         this.isColorLight() -> {
-            alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, minContrast)
-            if (alpha == -1) return Color.BLACK.brightenColor(1.2f)
+            alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, 4.5f)
+            if (alpha == -1) return Color.BLACK.lighten(1.2f)
         }
         else -> {
-            alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, minContrast)
-            if (alpha == -1) return Color.WHITE.brightenColor(0.84f)
+            alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, 4.5f)
+            if (alpha == -1) return Color.WHITE.lighten(0.84f)
         }
     }
     return ColorUtils.setAlphaComponent(Color.BLACK, alpha)
@@ -93,11 +93,11 @@ fun Int.stepColor(@FloatRange(from = 0.01, to = 2.00) factor: Float = 0.2f): Mut
     val colors = mutableListOf<Int>()
     val alpha = this.colorAlpha()
     for (i in 0..200 step (factor * 100).toInt()) {
-        val brightenColor = this.brightenColor(i / 100f)
-        if (this == brightenColor) {
+        val lighten = this.lighten(i / 100f)
+        if (this == lighten) {
             colors.add(this)
         } else {
-            colors.add(brightenColor.adjustAlpha(alpha / 255f))
+            colors.add(lighten.adjustAlpha(alpha / 255f))
         }
     }
     return colors

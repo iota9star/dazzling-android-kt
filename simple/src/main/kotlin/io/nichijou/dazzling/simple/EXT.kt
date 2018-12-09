@@ -15,8 +15,8 @@ import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import io.nichijou.dazzling.brightenColor
-import io.nichijou.dazzling.isColorDark
+import io.nichijou.color.isColorDark
+import io.nichijou.color.lighten
 
 internal fun Context.colorRes(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)
 
@@ -37,8 +37,8 @@ private fun defaultRippleColor(context: Context, useDarkRipple: Boolean): Int {
 internal fun Button.tint(@ColorInt color: Int, isDark: Boolean) {
     val darker = color.isColorDark()
     val disabled = context.colorRes(if (isDark) R.color.md_button_disabled_dark else R.color.md_button_disabled_light)
-    val pressed = color.brightenColor(if (darker) 0.9f else 1.1f)
-    val activated = color.brightenColor(if (darker) 1.1f else 0.9f)
+    val pressed = color.lighten(if (darker) 0.9f else 1.1f)
+    val activated = color.lighten(if (darker) 1.1f else 0.9f)
     val rippleColor = defaultRippleColor(context, darker)
     val textColor = if (darker) Color.WHITE else Color.BLACK
     val sl = ColorStateList(

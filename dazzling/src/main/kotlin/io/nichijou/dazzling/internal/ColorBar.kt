@@ -16,9 +16,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import io.nichijou.color.adjustAlpha
+import io.nichijou.color.lighten
 import io.nichijou.dazzling.R
-import io.nichijou.dazzling.adjustAlpha
-import io.nichijou.dazzling.brightenColor
 
 internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
@@ -57,7 +57,7 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ColorBar)
         mTrackSize = ta.getDimension(R.styleable.ColorBar_trackSize, this.context.dp2px(18f).toFloat())
-        mTrackColor = ta.getColor(R.styleable.ColorBar_trackColor, Color.WHITE.brightenColor(.9f))
+        mTrackColor = ta.getColor(R.styleable.ColorBar_trackColor, Color.WHITE.lighten(.9f))
         mTextSize = ta.getDimension(R.styleable.ColorBar_android_textSize, this.context.sp2px(12f).toFloat())
         mTextColor = ta.getColor(R.styleable.ColorBar_android_textColor, Color.GRAY)
         mTypeface = getRawTypeface(ta.getInt(R.styleable.ColorBar_android_typeface, MONOSPACE))
@@ -153,7 +153,7 @@ internal class ColorBar(context: Context, attrs: AttributeSet?) : View(context, 
         paint.isAntiAlias = true
         paint.strokeWidth = mTrackSize
         paint.strokeCap = Paint.Cap.ROUND
-        paint.shader = LinearGradient(startX - mTrackSize, startY, stopX, stopY, Color.TRANSPARENT, if (mColor == Color.TRANSPARENT) mColor else mColor.brightenColor(factor), Shader.TileMode.CLAMP)
+        paint.shader = LinearGradient(startX - mTrackSize, startY, stopX, stopY, Color.TRANSPARENT, if (mColor == Color.TRANSPARENT) mColor else mColor.lighten(factor), Shader.TileMode.CLAMP)
         canvas.drawLine(startX, startY, stopX, stopY, paint)
     }
 

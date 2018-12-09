@@ -21,9 +21,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.TintableBackgroundView
 import androidx.core.view.ViewCompat
+import io.nichijou.color.isColorDark
+import io.nichijou.color.lighten
 import io.nichijou.dazzling.R
-import io.nichijou.dazzling.brightenColor
-import io.nichijou.dazzling.isColorDark
 
 internal fun Context.isTablet() = (this.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
 internal fun Context.isLandscape() = this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -49,8 +49,8 @@ private fun defaultRippleColor(context: Context, useDarkRipple: Boolean): Int {
 internal fun Button.tint(@ColorInt color: Int, isDark: Boolean) {
     val darker = color.isColorDark()
     val disabled = context.colorRes(if (isDark) R.color.md_button_disabled_dark else R.color.md_button_disabled_light)
-    val pressed = color.brightenColor(if (darker) 0.9f else 1.1f)
-    val activated = color.brightenColor(if (darker) 1.1f else 0.9f)
+    val pressed = color.lighten(if (darker) 0.9f else 1.1f)
+    val activated = color.lighten(if (darker) 1.1f else 0.9f)
     val rippleColor = defaultRippleColor(context, darker)
     val textColor = if (darker) Color.WHITE else Color.BLACK
     val sl = ColorStateList(
@@ -71,7 +71,7 @@ internal fun Button.tint(@ColorInt color: Int, isDark: Boolean) {
 
 internal fun EditText.tint(color: Int, isDark: Boolean) {
     this.setTextColor(color)
-    this.setHintTextColor(if (isDark) color.brightenColor(1.2f) else color.brightenColor(.8f))
+    this.setHintTextColor(if (isDark) color.lighten(1.2f) else color.lighten(.8f))
     val editTextColorStateList = ColorStateList(
         arrayOf(
             intArrayOf(-android.R.attr.state_enabled),

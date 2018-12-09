@@ -9,10 +9,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.Checkable
 import androidx.annotation.ColorInt
+import io.nichijou.color.adjustAlpha
+import io.nichijou.color.isColorLight
+import io.nichijou.color.lighten
 import io.nichijou.dazzling.R
-import io.nichijou.dazzling.adjustAlpha
-import io.nichijou.dazzling.brightenColor
-import io.nichijou.dazzling.isColorLight
 
 internal class ColorView(context: Context, attrs: AttributeSet?) : View(context, attrs), Checkable {
 
@@ -87,7 +87,7 @@ internal class ColorView(context: Context, attrs: AttributeSet?) : View(context,
     override fun onDraw(canvas: Canvas) {
         if (mChecked) {
             mRadius = measuredWidth / 2f - mBorderWidth - mSelectedSpace
-            mRingPaint.color = if (mColor.isColorLight()) mColor.brightenColor(.9f).adjustAlpha(.64f) else mColor.brightenColor(1.1f).adjustAlpha(.64f)
+            mRingPaint.color = if (mColor.isColorLight()) mColor.lighten(.9f).adjustAlpha(.64f) else mColor.lighten(1.1f).adjustAlpha(.64f)
         } else {
             mRadius = measuredWidth / 2f - mSelectedSpace
             mRingPaint.color = Color.TRANSPARENT
