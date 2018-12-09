@@ -93,7 +93,7 @@ randomColor() // 返回一个随机颜色，不包含alpha值
 randomColors(size: Int) // 返回一个指定数量的随机颜色集合
 randomColors(range: IntRange) // 返回一个范围内数量的随机颜色集合
 ```
-+  若使用Java，则使用ColorUtils.``拓展方法名``调用
++  若使用Java，则使用ColorUtils.``拓展方法名``调用，eg: ColorUtils.isColorLight(color)
 
 ----
 ### Licenses
