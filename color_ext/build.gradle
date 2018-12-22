@@ -5,40 +5,40 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 28
-        vectorDrawables.useSupportLibrary = true
+  compileSdkVersion 28
+  buildToolsVersion '28.0.3'
+  defaultConfig {
+    minSdkVersion 16
+    targetSdkVersion 28
+    vectorDrawables.useSupportLibrary = true
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    lintOptions {
-        check 'Interoperability'
-    }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
+  }
+  compileOptions {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+  }
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+  lintOptions {
+    check 'Interoperability'
+  }
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+  }
 }
 
 dependencies {
-    implementation "androidx.core:core:1.0.1"
-    implementation "androidx.annotation:annotation:1.0.1"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+  implementation "androidx.core:core:1.0.1"
+  implementation "androidx.annotation:annotation:1.0.1"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 if (project.rootProject.file('local.properties').exists()) {
-    apply from: '../color-ext.gradle'
+  apply from: '../color-ext.gradle'
 }

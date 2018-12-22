@@ -1,4 +1,4 @@
 <resources>
-    <string name="hex">HEX</string>
-    <string name="palette">Palette</string>
+  <string name="hex">HEX</string>
+  <string name="palette">Palette</string>
 </resources>

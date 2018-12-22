@@ -9,58 +9,58 @@ def libName = "color-ext"
 version = "1.0.0"
 
 task sourcesJar(type: Jar) {
-    from android.sourceSets.main.kotlin.srcDirs
-    classifier = 'sources'
+  from android.sourceSets.main.kotlin.srcDirs
+  classifier = 'sources'
 }
 
 artifacts {
-    archives sourcesJar
+  archives sourcesJar
 }
 
 install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'Color EXT, Powered by Kotlin.'
-                url siteUrl
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'nichijou.io'
-                        name 'iota9star'
-                        email 'iota9star@foxmail.com'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection homeUrl
-                    url siteUrl
-                }
-            }
+  repositories.mavenInstaller {
+    pom {
+      project {
+        packaging 'aar'
+        name 'Color EXT, Powered by Kotlin.'
+        url siteUrl
+        licenses {
+          license {
+            name 'The Apache Software License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
         }
+        developers {
+          developer {
+            id 'nichijou.io'
+            name 'iota9star'
+            email 'iota9star@foxmail.com'
+          }
+        }
+        scm {
+          connection gitUrl
+          developerConnection homeUrl
+          url siteUrl
+        }
+      }
     }
+  }
 }
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = "nichijou"
-        name = libName
-        desc = 'Color EXT,, Powered by Kotlin.'
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
-        override = true
-    }
+  user = properties.getProperty("bintray.user")
+  key = properties.getProperty("bintray.apikey")
+  configurations = ['archives']
+  pkg {
+    repo = "nichijou"
+    name = libName
+    desc = 'Color EXT,, Powered by Kotlin.'
+    websiteUrl = siteUrl
+    vcsUrl = gitUrl
+    licenses = ["Apache-2.0"]
+    publish = true
+    override = true
+  }
 }

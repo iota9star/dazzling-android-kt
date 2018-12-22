@@ -11,7 +11,7 @@
 ``` gradle
 dependencies {
   // 其他
-  implementation 'io.nichijou:dazzling:1.0.2'
+  implementation 'io.nichijou:dazzling:1.0.3'
 }
 ```
 #### -> 快速使用
@@ -22,7 +22,9 @@ val dazzling = Dazzling.showNow(supportFragmentManager) { //BottomSheetDialogFra
     isEnableColorBar = false // 是否开启滑动条，默认为true
     presetColors = mutableListOf(Color.WHITE, Color.BLACK) // 设置的默认颜色，默认显示随机色
     preselectedColor = Color.YELLOW // 预先选中的颜色，默认为#7f7f7f
-    backgroundColor = Color.WHITE // 调色板的背景色，默认为Color.WHITE 当前属性支持动态修改，其余暂无法动态修改
+    backgroundColor = Color.WHITE // 调色板的背景色，默认为Color.WHITE
+    bgCornerRadii = floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f) // 设置背景四个角的圆角大小
+    paletteMargin = intArrayOf(dp16.toInt(), dp16.toInt(), dp16.toInt(), dp16.toInt()) // 设置margin
     randomSize = 16 // 显示随机颜色的个数，取值范围 > 0 默认为 8
     stepFactor = .5f // 颜色的色阶因子，取值范围 0.0f~2.0f 默认为 .2f
     onColorChecked { color ->
@@ -42,6 +44,8 @@ Dazzling dazzling = Dazzling.builder() // 下面的配置与kotlin version一致
     .setPreselectedColor(Color.YELLOW)
     .setRandomSize(24)
     .setStepFactor(.1f)
+    .setBgCornerRadii(floatArrayOf(dp16, dp16, dp16, dp16, dp16, dp16, dp16, dp16))
+    .setPaletteMargin(intArrayOf(dp16.toInt(), dp16.toInt(), dp16.toInt(), dp16.toInt()))
     .setPresetColors(mutableListOf(Color.YELLOW, Color.WHITE, Color.BLACK, Color.MAGENTA, Color.CYAN, Color.BLUE))
     .setOnColorChecked(object : Dazzling.Builder.OnColorChecked {
         override fun onChecked(value: Int) {

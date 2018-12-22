@@ -34,97 +34,97 @@ internal fun Context.drawableRes(@DrawableRes resId: Int) = ContextCompat.getDra
 
 
 internal fun View.setBackgroundCompat(@Nullable drawable: Drawable?) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-        this.background = drawable
-    } else {
-        this.setBackgroundDrawable(drawable)
-    }
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+    this.background = drawable
+  } else {
+    this.setBackgroundDrawable(drawable)
+  }
 }
 
 private fun defaultRippleColor(context: Context, useDarkRipple: Boolean): Int {
-    return context.colorRes(if (useDarkRipple) com.google.android.material.R.color.ripple_material_light else com.google.android.material.R.color.ripple_material_dark
-    )
+  return context.colorRes(if (useDarkRipple) com.google.android.material.R.color.ripple_material_light else com.google.android.material.R.color.ripple_material_dark
+  )
 }
 
 internal fun Button.tint(@ColorInt color: Int, isDark: Boolean) {
-    val darker = color.isColorDark()
-    val disabled = context.colorRes(if (isDark) R.color.md_button_disabled_dark else R.color.md_button_disabled_light)
-    val pressed = color.lighten(if (darker) 0.9f else 1.1f)
-    val activated = color.lighten(if (darker) 1.1f else 0.9f)
-    val rippleColor = defaultRippleColor(context, darker)
-    val textColor = if (darker) Color.WHITE else Color.BLACK
-    val sl = ColorStateList(
-        arrayOf(
-            intArrayOf(-android.R.attr.state_enabled),
-            intArrayOf(android.R.attr.state_enabled),
-            intArrayOf(android.R.attr.state_enabled, android.R.attr.state_pressed),
-            intArrayOf(android.R.attr.state_enabled, android.R.attr.state_activated),
-            intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
-        ), intArrayOf(disabled, color, pressed, activated, activated))
-    this.setTextColor(textColor)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && this.background is RippleDrawable) {
-        val rd = this.background as RippleDrawable
-        rd.setColor(ColorStateList.valueOf(rippleColor))
-    }
-    this.setBackgroundCompat(this.background?.tint(sl))
+  val darker = color.isColorDark()
+  val disabled = context.colorRes(if (isDark) R.color.md_button_disabled_dark else R.color.md_button_disabled_light)
+  val pressed = color.lighten(if (darker) 0.9f else 1.1f)
+  val activated = color.lighten(if (darker) 1.1f else 0.9f)
+  val rippleColor = defaultRippleColor(context, darker)
+  val textColor = if (darker) Color.WHITE else Color.BLACK
+  val sl = ColorStateList(
+    arrayOf(
+      intArrayOf(-android.R.attr.state_enabled),
+      intArrayOf(android.R.attr.state_enabled),
+      intArrayOf(android.R.attr.state_enabled, android.R.attr.state_pressed),
+      intArrayOf(android.R.attr.state_enabled, android.R.attr.state_activated),
+      intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
+    ), intArrayOf(disabled, color, pressed, activated, activated))
+  this.setTextColor(textColor)
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && this.background is RippleDrawable) {
+    val rd = this.background as RippleDrawable
+    rd.setColor(ColorStateList.valueOf(rippleColor))
+  }
+  this.setBackgroundCompat(this.background?.tint(sl))
 }
 
 internal fun EditText.tint(color: Int, isDark: Boolean) {
-    this.setTextColor(color)
-    this.setHintTextColor(if (isDark) color.lighten(1.2f) else color.lighten(.8f))
-    val editTextColorStateList = ColorStateList(
-        arrayOf(
-            intArrayOf(-android.R.attr.state_enabled),
-            intArrayOf(android.R.attr.state_enabled, -android.R.attr.state_pressed, -android.R.attr.state_focused),
-            intArrayOf()),
-        intArrayOf(
-            context.colorRes(if (isDark) R.color.md_text_disabled_dark else R.color.md_text_disabled_light),
-            context.colorRes(if (isDark) R.color.md_control_normal_dark else R.color.md_control_normal_light),
-            color)
-    )
-    if (this is TintableBackgroundView) {
-        ViewCompat.setBackgroundTintList(this, editTextColorStateList)
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        this.backgroundTintList = editTextColorStateList
-    }
-    this.tintCursor(color)
+  this.setTextColor(color)
+  this.setHintTextColor(if (isDark) color.lighten(1.2f) else color.lighten(.8f))
+  val editTextColorStateList = ColorStateList(
+    arrayOf(
+      intArrayOf(-android.R.attr.state_enabled),
+      intArrayOf(android.R.attr.state_enabled, -android.R.attr.state_pressed, -android.R.attr.state_focused),
+      intArrayOf()),
+    intArrayOf(
+      context.colorRes(if (isDark) R.color.md_text_disabled_dark else R.color.md_text_disabled_light),
+      context.colorRes(if (isDark) R.color.md_control_normal_dark else R.color.md_control_normal_light),
+      color)
+  )
+  if (this is TintableBackgroundView) {
+    ViewCompat.setBackgroundTintList(this, editTextColorStateList)
+  } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    this.backgroundTintList = editTextColorStateList
+  }
+  this.tintCursor(color)
 }
 
 private fun EditText.tintCursor(@ColorInt color: Int) {
-    try {
-        val fCursorDrawableRes = TextView::class.java.getDeclaredField("mCursorDrawableRes")
-        fCursorDrawableRes.isAccessible = true
-        val mCursorDrawableRes = fCursorDrawableRes.getInt(this)
-        fCursorDrawableRes.isAccessible = false
-        val fEditor = TextView::class.java.getDeclaredField("mEditor")
-        fEditor.isAccessible = true
-        val editor = fEditor.get(this)
-        fEditor.isAccessible = false
-        val clazz = editor.javaClass
-        val fCursorDrawable = clazz.getDeclaredField("mCursorDrawable")
-        fCursorDrawable.isAccessible = true
-        val drawables = arrayOfNulls<Drawable>(2)
-        val tintDrawable = context.drawableRes(mCursorDrawableRes)?.tint(color)
-        drawables[0] = tintDrawable
-        drawables[1] = tintDrawable
-        fCursorDrawable.set(editor, drawables)
-        fCursorDrawable.isAccessible = false
-    } catch (_: Exception) {
-    }
+  try {
+    val fCursorDrawableRes = TextView::class.java.getDeclaredField("mCursorDrawableRes")
+    fCursorDrawableRes.isAccessible = true
+    val mCursorDrawableRes = fCursorDrawableRes.getInt(this)
+    fCursorDrawableRes.isAccessible = false
+    val fEditor = TextView::class.java.getDeclaredField("mEditor")
+    fEditor.isAccessible = true
+    val editor = fEditor.get(this)
+    fEditor.isAccessible = false
+    val clazz = editor.javaClass
+    val fCursorDrawable = clazz.getDeclaredField("mCursorDrawable")
+    fCursorDrawable.isAccessible = true
+    val drawables = arrayOfNulls<Drawable>(2)
+    val tintDrawable = context.drawableRes(mCursorDrawableRes)?.tint(color)
+    drawables[0] = tintDrawable
+    drawables[1] = tintDrawable
+    fCursorDrawable.set(editor, drawables)
+    fCursorDrawable.isAccessible = false
+  } catch (_: Exception) {
+  }
 }
 
 internal fun Drawable.tint(@ColorInt color: Int): Drawable {
-    var d: Drawable = this
-    d = DrawableCompat.wrap(d.mutate())
-    DrawableCompat.setTintMode(d, PorterDuff.Mode.SRC_IN)
-    DrawableCompat.setTint(d, color)
-    return d
+  var d: Drawable = this
+  d = DrawableCompat.wrap(d.mutate())
+  DrawableCompat.setTintMode(d, PorterDuff.Mode.SRC_IN)
+  DrawableCompat.setTint(d, color)
+  return d
 }
 
 internal fun Drawable.tint(sl: ColorStateList?): Drawable {
-    if (sl == null) return this
-    var d: Drawable = this
-    d = DrawableCompat.wrap(d.mutate())
-    DrawableCompat.setTintList(d, sl)
-    return d
+  if (sl == null) return this
+  var d: Drawable = this
+  d = DrawableCompat.wrap(d.mutate())
+  DrawableCompat.setTintList(d, sl)
+  return d
 }

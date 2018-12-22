@@ -28,59 +28,59 @@ fun Int.adjustAlpha(@FloatRange(from = 0.0, to = 1.0) factor: Float) = Color.arg
 
 @ColorInt
 fun Int.saturate(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
-    if (by == 1f) return this
-    val hsv = FloatArray(3)
-    Color.colorToHSV(this, hsv)
-    hsv[1] = hsv[1] * by
-    return Color.HSVToColor(hsv)
+  if (by == 1f) return this
+  val hsv = FloatArray(3)
+  Color.colorToHSV(this, hsv)
+  hsv[1] = hsv[1] * by
+  return Color.HSVToColor(hsv)
 }
 
 @ColorInt
 fun Int.lighten(@FloatRange(from = 0.0, to = 2.0) by: Float): Int {
-    if (by == 1f) return this
-    val hsv = FloatArray(3)
-    Color.colorToHSV(this, hsv)
-    hsv[2] *= by
-    return Color.HSVToColor(hsv)
+  if (by == 1f) return this
+  val hsv = FloatArray(3)
+  Color.colorToHSV(this, hsv)
+  hsv[2] *= by
+  return Color.HSVToColor(hsv)
 }
 
 @ColorInt
 fun Int.blendWith(@ColorInt color: Int, ratio: Float): Int {
-    val inverseRatio = 1f - ratio
-    val a = Color.alpha(this) * inverseRatio + Color.alpha(color) * ratio
-    val r = Color.red(this) * inverseRatio + Color.red(color) * ratio
-    val g = Color.green(this) * inverseRatio + Color.green(color) * ratio
-    val b = Color.blue(this) * inverseRatio + Color.blue(color) * ratio
-    return Color.argb(a.toInt(), r.toInt(), g.toInt(), b.toInt())
+  val inverseRatio = 1f - ratio
+  val a = Color.alpha(this) * inverseRatio + Color.alpha(color) * ratio
+  val r = Color.red(this) * inverseRatio + Color.red(color) * ratio
+  val g = Color.green(this) * inverseRatio + Color.green(color) * ratio
+  val b = Color.blue(this) * inverseRatio + Color.blue(color) * ratio
+  return Color.argb(a.toInt(), r.toInt(), g.toInt(), b.toInt())
 }
 
 @ColorInt
 fun Int.titleColor(): Int {
-    val alpha: Int
-    if (this.isColorLight()) {
-        alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, 3.0f)
-        if (alpha == -1) return Color.BLACK
-    } else {
-        alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, 3.0f)
-        if (alpha == -1) return Color.WHITE
-    }
-    return ColorUtils.setAlphaComponent(Color.BLACK, alpha)
+  val alpha: Int
+  if (this.isColorLight()) {
+    alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, 3.0f)
+    if (alpha == -1) return Color.BLACK
+  } else {
+    alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, 3.0f)
+    if (alpha == -1) return Color.WHITE
+  }
+  return ColorUtils.setAlphaComponent(Color.BLACK, alpha)
 }
 
 @ColorInt
 fun Int.bodyColor(): Int {
-    val alpha: Int
-    when {
-        this.isColorLight() -> {
-            alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, 4.5f)
-            if (alpha == -1) return Color.BLACK.lighten(1.2f)
-        }
-        else -> {
-            alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, 4.5f)
-            if (alpha == -1) return Color.WHITE.lighten(0.84f)
-        }
+  val alpha: Int
+  when {
+    this.isColorLight() -> {
+      alpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, this, 4.5f)
+      if (alpha == -1) return Color.BLACK.lighten(1.2f)
     }
-    return ColorUtils.setAlphaComponent(Color.BLACK, alpha)
+    else -> {
+      alpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, this, 4.5f)
+      if (alpha == -1) return Color.WHITE.lighten(0.84f)
+    }
+  }
+  return ColorUtils.setAlphaComponent(Color.BLACK, alpha)
 }
 
 fun Int.isColorLight() = 1 - (0.299 * Color.red(this) + 0.587 * Color.green(this) + 0.114 * Color.blue(this)) / 255 < 0.5
@@ -90,17 +90,17 @@ fun Int.isColorDark() = !this.isColorLight()
 fun Int.isColorLight(@ColorInt bgColor: Int) = if (Color.alpha(this) < 128) bgColor.isColorLight() else this.isColorLight()
 
 fun Int.stepColor(@FloatRange(from = 0.01, to = 2.00) factor: Float = 0.2f): MutableList<Int> {
-    val colors = mutableListOf<Int>()
-    val alpha = this.colorAlpha()
-    for (i in 0..200 step (factor * 100).toInt()) {
-        val lighten = this.lighten(i / 100f)
-        if (this == lighten) {
-            colors.add(this)
-        } else {
-            colors.add(lighten.adjustAlpha(alpha / 255f))
-        }
+  val colors = mutableListOf<Int>()
+  val alpha = this.colorAlpha()
+  for (i in 0..200 step (factor * 100).toInt()) {
+    val lighten = this.lighten(i / 100f)
+    if (this == lighten) {
+      colors.add(this)
+    } else {
+      colors.add(lighten.adjustAlpha(alpha / 255f))
     }
-    return colors
+  }
+  return colors
 }
 
 fun Int.colorAlpha() = Color.alpha(this)
@@ -110,20 +110,20 @@ fun Int.toHexColor() = Integer.toHexString(this).toUpperCase()
 fun randomColor() = Color.rgb(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
 
 fun randomColors(size: Int): MutableList<Int> {
-    val colors = mutableListOf<Int>()
-    for (i in 0 until size) {
-        colors.add(randomColor())
-    }
-    return colors
+  val colors = mutableListOf<Int>()
+  for (i in 0 until size) {
+    colors.add(randomColor())
+  }
+  return colors
 }
 
 internal fun IntRange.random() = Random.nextInt(start, endInclusive + 1)
 
 fun randomColors(range: IntRange): IntArray {
-    val size = range.random()
-    val intArray = IntArray(size)
-    for (i in 0 until size) {
-        intArray[i] = randomColor()
-    }
-    return intArray
+  val size = range.random()
+  val intArray = IntArray(size)
+  for (i in 0 until size) {
+    intArray[i] = randomColor()
+  }
+  return intArray
 }
